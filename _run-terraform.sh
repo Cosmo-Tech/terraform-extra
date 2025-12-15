@@ -25,7 +25,7 @@ get_var_value() {
 }
 cloud_provider="$(get_var_value terraform.tfvars cloud_provider)"
 cluster_region="$(get_var_value terraform.tfvars cluster_region)"
-state_file_name="tfstate-tenant-$(get_var_value terraform.tfvars tenant)"
+state_file_name="tfstate-tenant-$(get_var_value terraform.tfvars tenant)-extra"
 
 
 # Clear old data
@@ -111,8 +111,9 @@ esac
 terraform fmt $backend_file
 terraform init -upgrade -reconfigure
 terraform plan -out .terraform.plan
-# terraform apply .terraform.plan
-terraform output
-# terraform output -raw rendered
+terraform apply .terraform.plan
+
+output_file=".terraform.outputs"
+terraform output > $output_file && echo "outputs saved in $output_file"
 
 exit
