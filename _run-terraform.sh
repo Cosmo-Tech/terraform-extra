@@ -111,7 +111,7 @@ esac
 terraform fmt $backend_file
 terraform init -upgrade -reconfigure
 terraform plan -out .terraform.plan
-terraform apply .terraform.plan
+# terraform apply .terraform.plan
 
 output_file=".terraform.outputs"
 terraform output > $output_file && echo "outputs saved in $output_file"
