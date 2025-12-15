@@ -7,12 +7,14 @@ terraform {
   }
 }
 
+
 provider "keycloak" {
   url       = "https://${var.cluster_domain}/keycloak/"
   client_id = "admin-cli"
   username  = data.kubernetes_secret.keycloak.data["keycloak_admin_user"]
   password  = data.kubernetes_secret.keycloak.data["keycloak_admin_password"]
 }
+
 
 data "kubernetes_secret" "keycloak" {
   metadata {
@@ -54,7 +56,7 @@ resource "keycloak_hardcoded_group_identity_provider_mapper" "oidc" {
   realm                   = data.keycloak_realm.realm.id
   name                    = "set_as_organization_user"
   identity_provider_alias = keycloak_oidc_identity_provider.oidc.alias
-  group                   = "organization_user"
+  group                   = "/organization_user"
 
   extra_config = {
     syncMode = "INHERIT"
@@ -73,7 +75,7 @@ data "keycloak_role" "organization_user" {
 
 resource "keycloak_group" "organization_user" {
   realm_id = data.keycloak_realm.realm.id
-  name     = "platform-user"
+  name     = "organization_user"
 }
 
 resource "keycloak_group_roles" "organization_user" {
@@ -100,7 +102,7 @@ data "keycloak_role" "platform_admin" {
 resource "keycloak_group" "platform_admin" {
   realm_id  = data.keycloak_realm.realm.id
   parent_id = keycloak_group.organization_user.id
-  name      = "platform-admin"
+  name      = "platform_admin"
 
   depends_on = [
     keycloak_group.organization_user
