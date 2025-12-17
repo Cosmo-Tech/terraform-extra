@@ -29,7 +29,7 @@
 
 ## Developpers
 * modules
-    * **terraform-tenant**
+    * **terraform-extra**
         * *config_keycloak_idp* = add an Identity Provider on the top of an existing Keycloak (for exemple set Okta as IdP for Keycloak)
 * Terraform **state**
     * The state is stored beside the cluster Terraform state, in the current cloud s3/blob storage service (generally called `cosmotech-states` or `cosmotechstates`, depending on what the cloud provider allows in naming convention)
