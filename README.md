@@ -25,7 +25,8 @@
             ```
 
 ## Known errors
-* No known error for now !
+* None known error for now !
+    > resolution description will takes place here
 
 ## Developpers
 * modules
