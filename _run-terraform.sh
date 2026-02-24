@@ -25,7 +25,9 @@ get_var_value() {
 }
 cloud_provider="$(get_var_value terraform.tfvars cloud_provider)"
 cluster_region="$(get_var_value terraform.tfvars cluster_region)"
-state_file_name="tfstate-tenant-$(get_var_value terraform.tfvars tenant)-extra"
+cluster_domain="$(get_var_value terraform.tfvars cluster_domain)"
+cluster_name="$(echo $cluster_domain | cut -d . -f 1)"
+state_file_name="tfstate-$cluster_name-tenant-$(get_var_value terraform.tfvars tenant)-extra"
 
 
 # Clear old data
