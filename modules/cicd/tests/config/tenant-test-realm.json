@@ -1,0 +1,12 @@
+{
+  "realm": "tenant-test",
+  "enabled": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "Platform.Admin",
+        "description": "Administration role"
+      }
+    ]
+  }
+}

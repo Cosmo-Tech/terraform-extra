@@ -1,0 +1,7 @@
+keycloak_url = "http://localhost:8080"
+keycloak_client_id = "admin-cli"
+keycloak_username = "admin"
+keycloak_password = "admin"
+keycloak_realm = "master"
+tenant = "tenant-test"
+cluster_domain = "localhost"
