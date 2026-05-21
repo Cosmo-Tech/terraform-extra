@@ -5,6 +5,12 @@
 # - ./script.sh
 
 
+# Colors
+NO_FORMAT="\033[0m"
+FG_COLOR_INFO="\033[38;5;141m"
+FG_COLOR_WARN="\033[38;5;203m"
+
+
 # Stop script if missing dependency
 required_commands="terraform"
 for command in $required_commands; do
@@ -29,93 +35,100 @@ cluster_domain="$(get_var_value terraform.tfvars cluster_domain)"
 cluster_name="$(echo $cluster_domain | cut -d . -f 1)"
 state_file_name="tfstate-$cluster_name-tenant-$(get_var_value terraform.tfvars tenant)-extra"
 
+# Generate state_storage_name for Azure backend
+# Azure storage account names must be 3-24 chars, lowercase alphanumeric only
+azure_subscription_id="$(get_var_value terraform.tfvars azure_subscription_id)"
+sub_hash="$(echo -n "$azure_subscription_id" | sha256sum | cut -c1-9)"
+state_storage_name="csmstates${sub_hash}"
 
 # Clear old data
 rm -rf .terraform*
 rm -rf terraform.tfstate*
 
 
-# The trick here is to write configuration in a dynamic file created at the begin of the
+# Automatically detect all the $TEMPLATE variables from a given a file,
+# and replace them with the value that the same variable has in the current script.
+# Usage: prepare_target_file <source file> <target file>
+prepare_target_file() {
+  local source_file=$1
+  local target_file=$2
+
+  rm -f $target_file
+  cp -f $source_file $target_file
+
+  local needed_variables="$(cat $target_file | grep TEMPLATE_ | sed 's|.*TEMPLATE_\([a-zA-Z_]*\).*|\1|' | sort -u)"
+  for var in $needed_variables; do
+
+    # Declare the TEMPLATE_variable
+    eval value=\$$var
+
+    # Replace TEMPLATE with the actual value
+    sed -i "s|\$TEMPLATE_$var|$value|" $target_file
+  done
+}
+target_file='target.tf'
+
+
+# The trick here is to write configuration in dynamic files created at the begin of the
 # execution, containing the config that the concerned provider is waiting for Terraform backend.
 # Then, Terraform will automatically detects it from its .tf extension.
-backend_file="backend.tf"
 case "$(echo $cloud_provider)" in
   'azure')
-    echo " \
-        provider \"azurerm\" {
-            features {}
-            subscription_id = var.azure_subscription_id
-            tenant_id       = var.azure_entra_tenant_id
-        }    
-        terraform {
-            backend \"azurerm\" {
-                key                  = \"$state_file_name\"
-                storage_account_name = \"cosmotechstates\"
-                container_name       = \"cosmotechstates\"
-                resource_group_name  = \"cosmotechstates\"
-            }
-        }
-        variable \"azure_subscription_id\" { type = string }
-        variable \"azure_entra_tenant_id\" { type = string }
-    " > $backend_file ;;
+    prepare_target_file "targets/$cloud_provider.target.tf" $target_file
+    ;;
 
   'aws')
-    echo " \
-        provider \"aws\" {
-            region = var.region
-        }
-        terraform {
-            backend \"s3\" {
-                key    = \"$state_file_name\"
-                bucket = \"cosmotech-states\"
-                region = \"$cluster_region\"
-            }
-        }
-    " > $backend_file ;;
+    prepare_target_file "targets/$cloud_provider.target.tf" $target_file
+    ;;
 
   'gcp')
-    state_storage_name='"cosmotech-states"'
-    echo " \
-        terraform {
-          backend \"gcs\" {
-            bucket = $state_storage_name
-            prefix = "$state_file_name"
-          }
-        }
+    prepare_target_file "targets/$cloud_provider.target.tf" $target_file
+    ;;
 
-        provider \"google\" {
-          project = var.project_id
-          region  = var.cluster_region
-        }
+  'kob')
+    state_url="$(get_var_value terraform.tfvars state_host)/$state_file_name"
 
-        variable \"project_id\" { type = string }
+    if [ -z $TF_HTTP_USERNAME ] || [ -z $TF_HTTP_PASSWORD ]; then
+        echo "error: empty TF_HTTP_USERNAME or TF_HTTP_PASSWORD (required for backend authentication)"
+        echo "  export TF_HTTP_USERNAME="
+        echo "  export TF_HTTP_PASSWORD="
+        exit
+    else
+        echo "found TF_HTTP_USERNAME & TF_HTTP_PASSWORD"
+    fi
 
-        data \"terraform_remote_state\" \"terraform_cluster\" {
-          backend = \"gcs\"
-          config = {
-            bucket = $state_storage_name
-            # prefix = \"\"
-          }
-        }
+    export TF_CLI_ARGS="-lock=false"
 
-        data \"google_client_config\" \"current\" {}
-    " > $backend_file ;;
+    prepare_target_file "targets/$cloud_provider.target.tf" $target_file
+    ;;
 
   *)
-    echo "error: unknown or empty \e[91mcloud_provider\e[0m from terraform.tfvars"
+    echo "error: unknown or empty $FG_COLOR_WARN'cloud_provider'$NO_FORMAT from terraform.tfvars"
     exit
     ;;
 esac
 
 
-
 # Deploy
-terraform fmt $backend_file
+terraform fmt $target_file
 terraform init -upgrade -reconfigure
 terraform plan -out .terraform.plan
 # terraform apply .terraform.plan
 
-output_file=".terraform.outputs"
-terraform output > $output_file && echo "outputs saved in $output_file"
+option_apply='--apply'
+if [ "$(echo $1)" = "$option_apply" ]; then
+  terraform apply .terraform.plan
+else
+  echo "$NO_FORMAT"
+  echo 'Terraform plan can be applied with:'
+  echo "$FG_COLOR_INFO  $0 $option_apply"
+fi
 
+
+tenant_name="tenant-$(get_var_value terraform.tfvars tenant)"
+echo "$NO_FORMAT"
+echo "target is $FG_COLOR_INFO$cluster_name/$tenant_name"
+
+
+echo "$NO_FORMAT"
 exit

@@ -1,5 +1,7 @@
+.*
 .env*
 .terraform*
 terraform.tfstate*
 backend.tf
+target.tf
 terraform.tfvars
