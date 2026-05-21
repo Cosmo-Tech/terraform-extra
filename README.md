@@ -18,11 +18,25 @@
 * deploy
     * fill `terraform.tfvars` variables according to your needs
     * run pre-configured script
-        > ℹ️ comment/uncomment the terraform apply line at the end to get a plan without deploy anything
-        * Linux
-            ```
-            ./_run-terraform.sh
-            ```
+        * plan
+            > get an execution plan to preview the changes without applying
+            * Linux
+                ```
+                ./_run-terraform.sh
+                ```
+            * Windows
+                ```
+                ./_run-terraform.ps1
+                ```
+        * apply
+            > executes the operations proposed in the plan
+            * Linux
+                ```
+                ./_run-terraform.sh --apply
+                ```
+            * Windows
+                ```
+                ./_run-terraform.ps1 --apply
 
 ## Known errors
 * None known error for now !
@@ -33,7 +47,7 @@
     * **terraform-extra**
         * *config_keycloak_idp* = add an Identity Provider on the top of an existing Keycloak (for exemple set Okta as IdP for Keycloak)
 * Terraform **state**
-    * The state is stored beside the cluster Terraform state, in the current cloud s3/blob storage service (generally called `cosmotech-states` or `cosmotechstates`, depending on what the cloud provider allows in naming convention)
+    * The state is stored beside the cluster Terraform state, in the current cloud s3/blob storage service (generally called `cosmotech-states` or `csmstates<id>`, depending on what the cloud provider allows in naming convention)
 
 <br>
 <br>
