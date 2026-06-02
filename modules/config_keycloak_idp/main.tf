@@ -10,7 +10,7 @@ terraform {
 
 provider "keycloak" {
   url       = "https://${var.cluster_domain}"
-  base_path       = "/keycloak"
+  base_path = "/keycloak"
   client_id = "admin-cli"
   username  = data.kubernetes_secret.keycloak.data["keycloak_admin_user"]
   password  = data.kubernetes_secret.keycloak.data["keycloak_admin_password"]

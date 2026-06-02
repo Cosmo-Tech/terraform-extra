@@ -14,16 +14,18 @@
 # tenant             = "test0"
 
 
-## VARIABLES EXAMPLE FOR GCP
+# ## VARIABLES EXAMPLE FOR GCP
 # cloud_provider     = "gcp"
 # cluster_domain     = "gke-dev-devops1.gcp.platform.cosmotech.com"
 # tenant             = "test0"
 
 
-## VARIABLES EXAMPLE FOR BARE
-# cloud_provider = "bare"
-# cluster_domain     = ""
-# tenant             = "test0"
+# ## VARIABLES EXAMPLE FOR KOB (= On-premise)
+# cloud_provider        = "kob"
+# cluster_region        = ""
+# cluster_domain        = "kob-dev-devops.onpremise.platform.cosmotech.com"
+# tenant                = "test0"
+# state_host            = "https://cosmotechstates.onpremise.platform.cosmotech.com"
 
 
 ## Module "config_keycloak_idp"
