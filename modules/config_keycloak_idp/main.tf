@@ -2,14 +2,15 @@ terraform {
   required_providers {
     keycloak = {
       source  = "keycloak/keycloak"
-      version = "~> 5.5.0"
+      version = "~> 5.7.0"
     }
   }
 }
 
 
 provider "keycloak" {
-  url       = "https://${var.cluster_domain}/keycloak/"
+  url       = "https://${var.cluster_domain}"
+  base_path = "/keycloak"
   client_id = "admin-cli"
   username  = data.kubernetes_secret.keycloak.data["keycloak_admin_user"]
   password  = data.kubernetes_secret.keycloak.data["keycloak_admin_password"]
