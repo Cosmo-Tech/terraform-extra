@@ -8,23 +8,6 @@ terraform {
 }
 
 
-provider "keycloak" {
-  url       = "https://${var.cluster_domain}"
-  base_path = "/keycloak"
-  client_id = "admin-cli"
-  username  = data.kubernetes_secret.keycloak.data["keycloak_admin_user"]
-  password  = data.kubernetes_secret.keycloak.data["keycloak_admin_password"]
-}
-
-
-data "kubernetes_secret" "keycloak" {
-  metadata {
-    namespace = "keycloak"
-    name      = "keycloak-config"
-  }
-}
-
-
 data "keycloak_realm" "realm" {
   realm = "tenant-${var.tenant}"
 }
