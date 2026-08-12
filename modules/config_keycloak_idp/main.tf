@@ -7,11 +7,9 @@ terraform {
   }
 }
 
-
 data "keycloak_realm" "realm" {
   realm = "tenant-${var.tenant}"
 }
-
 
 resource "keycloak_oidc_identity_provider" "oidc" {
   realm = data.keycloak_realm.realm.id
@@ -34,7 +32,6 @@ resource "keycloak_oidc_identity_provider" "oidc" {
     "clientAuthMethod" = "client_secret_post"
   }
 }
-
 
 resource "keycloak_hardcoded_group_identity_provider_mapper" "oidc" {
   realm                   = data.keycloak_realm.realm.id

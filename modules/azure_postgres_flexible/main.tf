@@ -13,23 +13,15 @@ locals {
   )
 }
 
-# Discover AKS frontend Load Balancer public IP(s)
-data "azurerm_lb" "aks" {
-  count               = var.manage_aks_lb_firewall_rules ? 1 : 0
-  name                = "kubernetes"
-  resource_group_name = local.mc_resource_group_name
-}
-
 data "azurerm_public_ips" "aks_lb" {
-  count               = var.manage_aks_lb_firewall_rules ? 1 : 0
   resource_group_name = local.mc_resource_group_name
 }
 
 locals {
-  aks_lb_ip_addresses = var.manage_aks_lb_firewall_rules ? [
-    for ip in data.azurerm_public_ips.aks_lb[0].public_ips : ip.ip_address
+  aks_lb_ip_addresses = [
+    for ip in data.azurerm_public_ips.aks_lb.public_ips : ip.ip_address
     if ip.ip_address != null
-  ] : []
+  ]
 
   aks_lb_firewall_rules = {
     for idx, ip in local.aks_lb_ip_addresses :
@@ -52,7 +44,7 @@ resource "azurerm_postgresql_flexible_server" "this" {
   resource_group_name = var.resource_group_name
   location            = var.location
 
-  version = var.postgresql_version
+  version  = var.postgresql_version
   sku_name = var.sku_name
 
   storage_mb                   = var.storage_mb
@@ -72,8 +64,6 @@ resource "azurerm_postgresql_flexible_server" "this" {
       mode = high_availability.value
     }
   }
-
-  tags = var.tags
 
   lifecycle {
     ignore_changes = [

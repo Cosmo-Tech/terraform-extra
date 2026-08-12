@@ -20,12 +20,6 @@ variable "mc_resource_group_name" {
   description = "Override for the AKS node resource group name. If null, it is computed as MC_<resource_group_name>_<cluster_name>_<location>."
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "Tags inherited from the resource group / AKS cluster, applied to every resource created by this module."
-}
-
 # Server sizing / engine
 variable "server_name" {
   type        = string
@@ -35,30 +29,26 @@ variable "server_name" {
 
 variable "postgresql_version" {
   type        = string
-  default     = "18"
-  description = "PostgreSQL major version. One of '11'..'18' (requires azurerm provider >= 4.60.0 for '18')."
+  description = "PostgreSQL major version. One of '11'..'18'."
 
   validation {
-    condition     = contains(["11", "12", "13", "14", "15", "16", "17", "18"], var.postgresql_version)
+    condition     = contains(["16", "17", "18"], var.postgresql_version)
     error_message = "postgresql_version must be a major version only (e.g. '18', not '18.4')."
   }
 }
 
 variable "sku_name" {
   type        = string
-  default     = "B_Standard_B1ms"
   description = "Compute SKU. e.g. 'B_Standard_B1ms' for dev/test, 'GP_Standard_D2s_v3' (General Purpose) for prod workloads."
 }
 
 variable "storage_mb" {
   type        = number
-  default     = 32768
   description = "Storage size in MB (minimum 32768 = 32GB)."
 }
 
 variable "backup_retention_days" {
   type        = number
-  default     = 7
   description = "Number of days to retain backups (7-35)."
 
   validation {
@@ -100,7 +90,7 @@ variable "public_network_access_enabled" {
 variable "allow_access_from_azure_services" {
   type        = bool
   default     = true
-  description = "Create the 0.0.0.0-0.0.0.0 firewall rule allowing any Azure service (required for PowerBI, Data Factory, etc.) to reach the server."
+  description = "Create the 0.0.0.0-0.0.0.0 firewall rule allowing any Azure service (required for PowerBI, etc.) to reach the server."
 }
 
 variable "additional_firewall_rules" {
@@ -117,56 +107,10 @@ variable "fixed_firewall_ranges" {
     start_ip_address = string
     end_ip_address   = string
   }))
-  default = {
-    cosmo_office = {
-      start_ip_address = "94.231.41.184"
-      end_ip_address   = "94.231.41.190"
-    }
-    cosmo_datacenter = {
-      start_ip_address = "185.55.98.16"
-      end_ip_address   = "185.55.98.22"
-    }
-  }
-  description = "Well-known Cosmo Tech firewall ranges (office / datacenter). Override only if these ranges change."
-}
-
-variable "manage_aks_lb_firewall_rules" {
-  type        = bool
-  default     = true
-  description = "Whether to dynamically discover the AKS frontend Load Balancer public IP(s) (from the MC_ node resource group) and create one firewall rule per IP: <cluster_name>-lb1, <cluster_name>-lb2, ..."
+  description = "Defines fixed firewall IP address ranges for trusted office and datacenter networks."
 }
 
 # Admin credentials
-variable "generate_credentials" {
-  type        = bool
-  default     = true
-  description = "If true, Terraform generates a strong admin username/password with the random provider (printed at the end of apply). If false, admin_username/admin_password must be supplied."
-}
-
-variable "admin_username" {
-  type        = string
-  default     = null
-  sensitive   = true
-  description = "PostgreSQL admin username to use when generate_credentials = false. Must be >= 30 alphanumeric characters."
-
-  validation {
-    condition     = var.admin_username == null || (length(var.admin_username) >= 30 && can(regex("^[a-zA-Z0-9]+$", var.admin_username)))
-    error_message = "admin_username must be at least 30 alphanumeric characters."
-  }
-}
-
-variable "admin_password" {
-  type        = string
-  default     = null
-  sensitive   = true
-  description = "PostgreSQL admin password to use when generate_credentials = false. Must be >= 80 characters, alphanumeric + special characters."
-
-  validation {
-    condition     = var.admin_password == null || length(var.admin_password) >= 80
-    error_message = "admin_password must be at least 80 characters."
-  }
-}
-
 variable "admin_username_length" {
   type        = number
   default     = 32

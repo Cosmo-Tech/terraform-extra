@@ -1,5 +1,4 @@
 resource "random_string" "admin_username" {
-  count   = var.generate_credentials ? 1 : 0
   length  = var.admin_username_length
   special = false
   upper   = true
@@ -13,7 +12,6 @@ resource "random_string" "admin_username" {
 }
 
 resource "random_password" "admin_password" {
-  count            = var.generate_credentials ? 1 : 0
   length           = var.admin_password_length
   special          = true
   override_special = "!#$%&*()-_=+[]{}<>:?"
@@ -28,6 +26,14 @@ resource "random_password" "admin_password" {
 }
 
 locals {
-  effective_admin_username = var.generate_credentials ? random_string.admin_username[0].result : var.admin_username
-  effective_admin_password = var.generate_credentials ? random_password.admin_password[0].result : var.admin_password
+  # Azure requires the admin username to NOT start with a digit. random_string
+  # can produce a leading digit since "numeric = true" applies to every
+  # position; force the first character to be a letter ("a") in that case,
+  # keeping the same overall length.
+  effective_admin_username = (
+    can(regex("^[0-9]", random_string.admin_username.result))
+    ? "a${substr(random_string.admin_username.result, 1, -1)}"
+    : random_string.admin_username.result
+  )
+  effective_admin_password = random_password.admin_password.result
 }

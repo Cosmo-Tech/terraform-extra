@@ -14,8 +14,3 @@ output "administrator_password" {
   description = "PostgreSQL administrator password. Copy this into your Vault server."
   sensitive   = true
 }
-
-output "credentials_hint" {
-  description = "One-line reminder: generated admin credentials are not printed and must be pulled from Terraform state into Vault."
-  value       = "Admin credentials generated for '${azurerm_postgresql_flexible_server.this.name}' are not displayed. Fetch with: terraform output -raw azure_postgres_flexible-administrator_login / -administrator_password (save to Vault, shown only once)."
-}

@@ -4,4 +4,4 @@
 terraform.tfstate*
 backend.tf
 target.tf
-terraform.tfvars
+!terraform.tfvars
