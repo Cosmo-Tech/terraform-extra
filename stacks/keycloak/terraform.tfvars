@@ -1,4 +1,4 @@
-# ## VARIABLES EXAMPLE FOR AZURE
+## VARIABLES EXAMPLE FOR AZURE (keycloak stack)
 # cloud_provider        = "azure"
 # cluster_region        = "westeurope"
 # cluster_domain        = "aks-dev-devops.azure.platform.cosmotech.com"
@@ -26,7 +26,6 @@
 # cluster_domain        = "kob-dev-devops.onpremise.platform.cosmotech.com"
 # tenant                = "test0"
 # state_host            = "https://cosmotechstates.onpremise.platform.cosmotech.com"
-
 
 ## Module "config_keycloak_idp"
 idp_alias             = "cosmotech.okta.com"

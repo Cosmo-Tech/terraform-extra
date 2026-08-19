@@ -7,28 +7,9 @@ terraform {
   }
 }
 
-
-provider "keycloak" {
-  url       = "https://${var.cluster_domain}"
-  base_path = "/keycloak"
-  client_id = "admin-cli"
-  username  = data.kubernetes_secret.keycloak.data["keycloak_admin_user"]
-  password  = data.kubernetes_secret.keycloak.data["keycloak_admin_password"]
-}
-
-
-data "kubernetes_secret" "keycloak" {
-  metadata {
-    namespace = "keycloak"
-    name      = "keycloak-config"
-  }
-}
-
-
 data "keycloak_realm" "realm" {
   realm = "tenant-${var.tenant}"
 }
-
 
 resource "keycloak_oidc_identity_provider" "oidc" {
   realm = data.keycloak_realm.realm.id
@@ -51,7 +32,6 @@ resource "keycloak_oidc_identity_provider" "oidc" {
     "clientAuthMethod" = "client_secret_post"
   }
 }
-
 
 resource "keycloak_hardcoded_group_identity_provider_mapper" "oidc" {
   realm                   = data.keycloak_realm.realm.id

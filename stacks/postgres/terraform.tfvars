@@ -1,0 +1,16 @@
+## VARIABLES EXAMPLE FOR AZURE (postgres stack, azure cloud_provider only)
+cloud_provider        = "azure"
+cluster_region        = "westeurope"
+cluster_domain        = "aks-dev-devops.azure.platform.cosmotech.com"
+azure_subscription_id = "xxxxxxxx_xxxx_xxxx_xxxx_xxxxxxxxxxxx"
+azure_entra_tenant_id = "xxxxxxxx_xxxx_xxxx_xxxx_xxxxxxxxxxxx"
+fixed_firewall_ranges = {
+  cosmo_office = {
+    start_ip_address = "xx.xxx.xx.xxx"
+    end_ip_address   = "xx.xxx.xx.xxx"
+  }
+  cosmo_datacenter = {
+    start_ip_address = "xx.xxx.xx.xxx"
+    end_ip_address   = "xx.xxx.xx.xxx"
+  }
+}

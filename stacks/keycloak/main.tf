@@ -1,5 +1,6 @@
+# Standalone stack: this root ONLY manages config_keycloak_idp.
 module "config_keycloak_idp" {
-  source = "./modules/config_keycloak_idp"
+  source = "../../modules/config_keycloak_idp"
 
   cluster_domain        = var.cluster_domain
   tenant                = var.tenant
