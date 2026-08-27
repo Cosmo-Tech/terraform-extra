@@ -17,3 +17,29 @@ module "azure_postgres_flexible" {
 
   additional_firewall_rules = var.azure_postgres_additional_firewall_rules
 }
+
+# Optional feature: automatically start/stop the PostgreSQL Flexible Server on a schedule
+# (e.g. business hours only) to save costs. Disabled by default.
+module "azure_postgres_autostartstop" {
+  source = "../../modules/azure_postgres_autostartstop"
+  count  = var.cloud_provider == "azure" && var.enable_postgres_auto_start_stop ? 1 : 0
+
+  location               = var.cluster_region
+  azure_subscription_id  = var.azure_subscription_id
+  azure_tenant_id        = var.azure_entra_tenant_id
+
+  postgres_resource_group_name = module.azure_postgres_flexible[0].resource_group_name
+  postgres_server_name         = module.azure_postgres_flexible[0].server_name
+  postgres_server_id           = module.azure_postgres_flexible[0].server_id
+
+  start_hours   = var.postgres_autostartstop_start_hours
+  start_minutes = var.postgres_autostartstop_start_minutes
+  stop_hours    = var.postgres_autostartstop_stop_hours
+  stop_minutes  = var.postgres_autostartstop_stop_minutes
+
+  disable_start = var.postgres_autostartstop_disable_start
+  disable_stop  = var.postgres_autostartstop_disable_stop
+
+  holiday_country = var.postgres_autostartstop_holiday_country
+  solidarity_day  = var.postgres_autostartstop_solidarity_day
+}

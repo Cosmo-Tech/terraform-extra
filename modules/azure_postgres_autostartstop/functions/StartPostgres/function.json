@@ -1,0 +1,12 @@
+{
+  "scriptFile": "__init__.py",
+  "bindings": [
+    {
+      "name": "startpostgrestimer",
+      "type": "timerTrigger",
+      "direction": "in",
+      "schedule": "%KEYSCHEDULE%",
+      "useMonitor": false
+    }
+  ]
+}
