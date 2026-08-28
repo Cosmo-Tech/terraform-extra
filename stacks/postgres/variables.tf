@@ -39,32 +39,50 @@ variable "fixed_firewall_ranges" {
 }
 
 # Module "azure_postgres_autostartstop"
+variable "postgres_server_already_exists" {
+  description = "Indicates whether the Postgres server already exists and should be used without being created by this module."
+  type        = bool
+  default     = false
+}
+
+variable "existing_postgres_resource_group_name" {
+  description = "Resource group name of the already-deployed Postgres Flexible Server. Required when postgres_server_already_exists = true."
+  type        = string
+  default     = null
+}
+
+variable "existing_postgres_server_name" {
+  description = "Name of the already-deployed Postgres Flexible Server. Required when postgres_server_already_exists = true."
+  type        = string
+  default     = null
+}
+
 variable "enable_postgres_auto_start_stop" {
-  description = "Whether to deploy the auto start/stop feature for the Azure PostgreSQL Flexible Server (cost saving, e.g. business hours only). Disabled by default."
+  description = "Whether to deploy the auto start/stop feature for the Azure Postgres Flexible Server (cost saving, e.g. business hours only). Disabled by default."
   type        = bool
   default     = false
 }
 
 variable "postgres_autostartstop_start_hours" {
-  description = "UTC hour (0-23) at which the PostgreSQL Flexible Server is started, Monday to Friday."
+  description = "UTC hour (0-23) at which the Postgres Flexible Server is started, Monday to Friday."
   type        = number
   default     = 7
 }
 
 variable "postgres_autostartstop_start_minutes" {
-  description = "UTC minute (0-59) at which the PostgreSQL Flexible Server is started."
+  description = "UTC minute (0-59) at which the Postgres Flexible Server is started."
   type        = number
   default     = 0
 }
 
 variable "postgres_autostartstop_stop_hours" {
-  description = "UTC hour (0-23) at which the PostgreSQL Flexible Server is stopped, Monday to Friday."
+  description = "UTC hour (0-23) at which the Postgres Flexible Server is stopped, Monday to Friday."
   type        = number
   default     = 19
 }
 
 variable "postgres_autostartstop_stop_minutes" {
-  description = "UTC minute (0-59) at which the PostgreSQL Flexible Server is stopped."
+  description = "UTC minute (0-59) at which the Postgres Flexible Server is stopped."
   type        = number
   default     = 0
 }

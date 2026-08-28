@@ -25,3 +25,8 @@ postgres_autostartstop_disable_start   = false
 postgres_autostartstop_disable_stop    = false
 postgres_autostartstop_holiday_country = "FR"
 postgres_autostartstop_solidarity_day  = ""
+
+## Optional: target an ALREADY EXISTING PostgreSQL Flexible Server (not managed by this stack).
+postgres_server_already_exists        = false
+existing_postgres_resource_group_name = "my-existing-rg"
+existing_postgres_server_name         = "my-existing-postgres-server"
