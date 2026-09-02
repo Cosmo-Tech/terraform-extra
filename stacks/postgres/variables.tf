@@ -110,3 +110,15 @@ variable "postgres_autostartstop_solidarity_day" {
   type        = string
   default     = ""
 }
+
+variable "postgres_autostartstop_enable_failure_alert" {
+  description = "Whether to notify Slack (via Incoming Webhook) when the auto start/stop Function App fails. Disabled by default."
+  type        = bool
+  default     = false
+}
+
+variable "postgres_autostartstop_slack_webhook_url" {
+  description = "Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks) notified on Function App failure. Required when postgres_autostartstop_enable_failure_alert = true."
+  type        = string
+  default     = null
+}

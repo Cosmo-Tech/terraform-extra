@@ -56,4 +56,7 @@ module "azure_postgres_autostartstop" {
 
   holiday_country = var.postgres_autostartstop_holiday_country
   solidarity_day  = var.postgres_autostartstop_solidarity_day
+
+  enable_failure_alert = var.postgres_autostartstop_enable_failure_alert
+  slack_webhook_url    = var.postgres_autostartstop_slack_webhook_url
 }

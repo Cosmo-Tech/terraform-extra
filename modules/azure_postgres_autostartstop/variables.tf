@@ -71,3 +71,15 @@ variable "solidarity_day" {
   default     = ""
   description = "Date (format DD-MM) that should be treated as a working day even if it falls on a public holiday."
 }
+
+variable "enable_failure_alert" {
+  type        = bool
+  default     = false
+  description = "Whether to notify Slack (via Incoming Webhook) when the Function App fails to start/stop the server (e.g. exception during the API call)."
+}
+
+variable "slack_webhook_url" {
+  type        = string
+  default     = null
+  description = "Slack Incoming Webhook URL (https://api.slack.com/messaging/webhooks) notified on Function App failure. Required when enable_failure_alert = true."
+}

@@ -26,6 +26,10 @@ postgres_autostartstop_disable_stop    = false
 postgres_autostartstop_holiday_country = "FR"
 postgres_autostartstop_solidarity_day  = ""
 
+## Optional: notify Slack (via Incoming Webhook) when the auto start/stop Function App fails.
+postgres_autostartstop_enable_failure_alert = false
+## export TF_VAR_postgres_autostartstop_slack_webhook_url='https://hooks.slack.com/xxxxx/XXXXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX'
+
 ## Optional: target an ALREADY EXISTING PostgreSQL Flexible Server (not managed by this stack).
 postgres_server_already_exists        = false
 existing_postgres_resource_group_name = "my-existing-rg"

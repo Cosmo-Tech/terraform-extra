@@ -133,6 +133,7 @@ resource "azurerm_linux_function_app" "fa" {
     "POSTGRES_SERVER_NAME"                     = var.postgres_server_name
     "AzureWebJobs.StartPostgres.Disabled"      = var.disable_start
     "AzureWebJobs.StopPostgres.Disabled"       = var.disable_stop
+    "SLACK_WEBHOOK_URL"                        = var.enable_failure_alert ? var.slack_webhook_url : ""
   }
 
   site_config {

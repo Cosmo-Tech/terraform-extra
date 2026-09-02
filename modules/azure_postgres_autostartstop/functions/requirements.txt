@@ -6,3 +6,4 @@ azure-functions
 azure-mgmt-postgresqlflexibleservers
 azure-identity
 holidays
+requests
