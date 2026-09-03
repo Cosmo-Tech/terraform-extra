@@ -14,3 +14,9 @@ output "administrator_password" {
   description = "Generated PostgreSQL administrator password. Save it in Vault."
   sensitive   = true
 }
+
+output "autostartstop_function_app_name" {
+  value       = try(module.azure_postgres_autostartstop[0].function_app_name, null)
+  description = "Name of the Azure Function App handling the PostgreSQL Flexible Server auto start/stop schedule, if enabled."
+}
+

@@ -14,3 +14,23 @@ fixed_firewall_ranges = {
     end_ip_address   = "xx.xxx.xx.xxx"
   }
 }
+
+## Optional: auto start/stop the PostgreSQL Flexible Server (cost saving).
+enable_postgres_auto_start_stop        = false
+postgres_autostartstop_start_hours     = 05   # UTC, Monday to Friday
+postgres_autostartstop_start_minutes   = 00
+postgres_autostartstop_stop_hours      = 19   # UTC, Monday to Friday
+postgres_autostartstop_stop_minutes    = 00
+postgres_autostartstop_disable_start   = false
+postgres_autostartstop_disable_stop    = false
+postgres_autostartstop_holiday_country = "FR"
+postgres_autostartstop_solidarity_day  = ""
+
+## Optional: notify Slack (via Incoming Webhook) when the auto start/stop Function App fails.
+postgres_autostartstop_enable_failure_alert = false
+## export TF_VAR_postgres_autostartstop_slack_webhook_url='https://hooks.slack.com/xxxxx/XXXXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX'
+
+## Optional: target an ALREADY EXISTING PostgreSQL Flexible Server (not managed by this stack).
+postgres_server_already_exists        = false
+existing_postgres_resource_group_name = "my-existing-rg"
+existing_postgres_server_name         = "my-existing-postgres-server"
