@@ -38,9 +38,9 @@ module "azure_postgres_autostartstop" {
   source = "../../modules/azure_postgres_autostartstop"
   count  = var.cloud_provider == "azure" && var.enable_postgres_auto_start_stop ? 1 : 0
 
-  location               = var.cluster_region
-  azure_subscription_id  = var.azure_subscription_id
-  azure_tenant_id        = var.azure_entra_tenant_id
+  location              = var.cluster_region
+  azure_subscription_id = var.azure_subscription_id
+  azure_tenant_id       = var.azure_entra_tenant_id
 
   postgres_resource_group_name = local.postgres_resource_group_name
   postgres_server_name         = local.postgres_server_name
